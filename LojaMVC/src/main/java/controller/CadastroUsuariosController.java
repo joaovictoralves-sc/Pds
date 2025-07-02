@@ -21,9 +21,9 @@ import util.LimitarCaracter;
 public class CadastroUsuariosController {
     Stage stageCadastroUsuarios;
     Usuario usuarioSelecionado;
-    private Runnable onUsuarioSalvo;
-
-    @FXML
+    private Runnable onUsuarioSalvo; //Este é o callback
+    
+      @FXML
     private Button btnExcluir;
 
     @FXML
@@ -36,10 +36,11 @@ public class CadastroUsuariosController {
     private ComboBox<String> cbPerfil;
     
     @FXML
-    private DatePicker Data;
+    private DatePicker dtAniversario;
 
     @FXML
     private TextField txtEmail;
+
 
     @FXML
     private TextField txtLogin;
@@ -53,14 +54,15 @@ public class CadastroUsuariosController {
     @FXML
     private TextField txtTelefone;
     
-    LimitarCaracter limitador = new LimitarCaracter();
+    LimitarCaracter limitarcaracter = new LimitarCaracter();
 
     @FXML
     void btnExcluirClick(ActionEvent event) throws SQLException {
-        Optional<ButtonType> resultado = AlertaUtil.mostrarConfirmacao("Atenção", "Tem certeza que quer excluir o registro?");
-        if (resultado.isPresent()) {
+        Optional<ButtonType> resultado = AlertaUtil.mostrarConfirmacao("Atenção",
+                "Tem certeza que quer excluir o registro?");
+        if(resultado.isPresent()){
             ButtonType botaoPressionado = resultado.get();
-            if (botaoPressionado == ButtonType.OK) {
+            if(botaoPressionado == ButtonType.OK){
                 excluir(usuarioSelecionado.getId());
             }
         }
@@ -73,48 +75,64 @@ public class CadastroUsuariosController {
 
     @FXML
     void btnIncluirAlterarClick(ActionEvent event) throws SQLException {
+         
         String nome = txtNome.getText();
         String telefone = txtTelefone.getText();
         String login = txtLogin.getText();
         String senha = txtSenha.getText();
         String perfil = cbPerfil.getValue();
         String email = txtEmail.getText();
-        LocalDate data = Data.getValue(); 
+        LocalDate aniversario = dtAniversario.getValue();
+        
+        java.sql.Date dataAniversario = null;
 
-        java.sql.Date dataConvertida = null;
-
-        if (data != null) {
-            dataConvertida = java.sql.Date.valueOf(data);
+        if (aniversario != null) {
+            dataAniversario = java.sql.Date.valueOf(aniversario);
         }
 
+        // VALIDAÇÕES BÁSICAS
         if (nome.isEmpty() || telefone.isEmpty() || login.isEmpty() ||
             senha.isEmpty() || email.isEmpty()) {
             AlertaUtil.mostrarErro("Erro", "Todos os campos devem ser preenchidos.");
             return;
         }
-
-        if (limitador.ValidaFormatoTelefone(txtTelefone.getText())) {
+        
+        if(limitarcaracter.LimitaFormatoTelefone(txtTelefone.getText())){
             return;
         }
-
-        if (limitador.ValidaFormatEmail(txtEmail.getText())) {
+        
+        if(limitarcaracter.LimitaFormatEmail(txtEmail.getText())){
             return;
         }
-
+        
         if (usuarioSelecionado == null) {
-            incluir(nome, telefone, login, senha, perfil, email, dataConvertida);
+            incluir(txtNome.getText(),
+                    txtTelefone.getText(),
+                    txtLogin.getText(),
+                    txtSenha.getText(),
+                    cbPerfil.getValue(),
+                    txtEmail.getText(),
+                    dataAniversario); 
         } else {
-            alterar(usuarioSelecionado.getId(), nome, telefone, login, senha, perfil, email, dataConvertida);
+            alterar(usuarioSelecionado.getId(),
+                    txtNome.getText(),
+                    txtTelefone.getText(),
+                    txtLogin.getText(),
+                    txtSenha.getText(),
+                    cbPerfil.getValue(),
+                    txtEmail.getText(),
+                    dataAniversario);  
         }
     }
 
-    void setStage(Stage telaCadastroUsuarios) {
+    
+    void setStage(Stage telaCadastroUsuarios){
         this.stageCadastroUsuarios = telaCadastroUsuarios;
     }
-
-    void ajustarElementosJanela(Usuario user) {
+    
+    void ajustarElementosJanela(Usuario user){
         this.usuarioSelecionado = user;
-        if (user == null) {
+        if(user == null){ //Incluir
             txtNome.requestFocus();
             btnExcluir.setVisible(false);
             btnIncluirAlterar.setText("Salvar");
@@ -126,46 +144,54 @@ public class CadastroUsuariosController {
             txtLogin.setText(user.getLogin());
             txtSenha.setText(user.getSenha());
             txtEmail.setText(user.getEmail());
-            if (user.getData()!= null) {
-                Data.setValue(user.getData().toLocalDate()); 
+            if(user.getAniversario() != null){
+            dtAniversario.setValue(user.getAniversario().toLocalDate());
             } else {
-                Data.setValue(null);
-            }
+            dtAniversario.setValue(null);
+            }       
             cbPerfil.getItems().addAll("admin", "user");
             cbPerfil.setValue(user.getPerfil());
-        }
+            }
     }
 
-    void incluir(String nome, String fone, String login, String senha, String perfil, String email, Date data) throws SQLException {
-        Usuario usuario = new Usuario(nome, fone, login, senha, perfil, email, data);
+    void incluir(String nome, String fone, 
+        String login, String senha, String perfil, String email, Date aniversario) throws SQLException {
+        Usuario usuario = new Usuario(nome, fone, login,
+        senha, perfil, email, aniversario);
         new UsuarioDAO().salvar(usuario);
-        if (onUsuarioSalvo != null) {
+        if(onUsuarioSalvo != null){
             onUsuarioSalvo.run();
         }
-        AlertaUtil.mostrarInformacao("Informação", "Registro inserido com sucesso!");
+        AlertaUtil.mostrarInformacao("Informação",
+                "Registro inserido com sucesso!");
         stageCadastroUsuarios.close();
     }
-
-    void alterar(int id, String nome, String fone, String login, String senha, String perfil, String email, Date data) throws SQLException {
-        Usuario usuarioAlterado = new Usuario(id, nome, fone, login, senha, perfil, email, data);
+    
+    void alterar(int id, String nome, String fone, String login,
+            String senha, String perfil, String email, Date aniversario) throws SQLException{
+        Usuario usuarioAlterado = new Usuario(id, nome, fone, login,
+        senha, perfil, email, aniversario);
         new UsuarioDAO().alterar(usuarioAlterado);
-        if (onUsuarioSalvo != null) {
+        if(onUsuarioSalvo != null){
             onUsuarioSalvo.run();
         }
-        AlertaUtil.mostrarInformacao("Informação", "Registro alterado com sucesso!");
+         AlertaUtil.mostrarInformacao("Informação",
+                "Registro alterado com sucesso!");
         stageCadastroUsuarios.close();
     }
-
-    public void setOnUsuarioSalvo(Runnable callback) {
+    
+    public void setOnUsuarioSalvo(Runnable callback){
         this.onUsuarioSalvo = callback;
     }
-
-    public void excluir(int id) throws SQLException {
+    
+    public void excluir(int id) throws SQLException{
         new UsuarioDAO().excluir(id);
-        if (onUsuarioSalvo != null) {
+         if(onUsuarioSalvo != null){
             onUsuarioSalvo.run();
         }
-        AlertaUtil.mostrarInformacao("Informação", "Registro excluído com sucesso!");
-        stageCadastroUsuarios.close();
+         AlertaUtil.mostrarInformacao("Informação", 
+                 "Registro excluído com sucesso!");
+         stageCadastroUsuarios.close();
     }
+    
 }

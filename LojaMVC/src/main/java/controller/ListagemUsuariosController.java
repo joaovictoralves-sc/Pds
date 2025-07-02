@@ -3,7 +3,6 @@ package controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -59,12 +58,12 @@ public class ListagemUsuariosController {
         telaCadastroUsuarios.setOnShown(evento -> {
             cadc.ajustarElementosJanela(null);
         });
-
+        
         cadc.setOnUsuarioSalvo(() -> {
-            try {
+            try{
                 carregarUsuariosTabela();
-            } catch (SQLException ex) {
-                // Pode adicionar tratamento de erro aqui
+            } catch (SQLException ex){
+                
             }
         });
 
@@ -88,75 +87,85 @@ public class ListagemUsuariosController {
         carregarUsuariosTabela();
     }
 
-    // Método para listar usuários no TableView
+    //Método para listar usuarios no TableView
     private void carregarUsuariosTabela() throws SQLException {
         lista = FXCollections.observableArrayList(listarUsuarios());
         if (!lista.isEmpty()) {
             tabelaUsuarios.getColumns().clear();
 
-            TableColumn<Usuario, Number> colunaID = new TableColumn<>("ID");
+            TableColumn<Usuario, Number> colunaID
+                    = new TableColumn<>("ID");
             colunaID.setCellValueFactory(u -> u.getValue().idProperty());
             colunaID.setPrefWidth(40);
 
-            TableColumn<Usuario, String> colunaNome = new TableColumn<>("Nome");
-            colunaNome.setCellValueFactory(u -> u.getValue().nomeProperty());
+            TableColumn<Usuario, String> colunaNome
+                    = new TableColumn<>("Nome");
+            colunaNome.setCellValueFactory(u
+                    -> u.getValue().nomeProperty());
             colunaNome.setStyle("-fx-alignment: CENTER;");
 
-            TableColumn<Usuario, String> colunaFone = new TableColumn<>("Telefone");
-            colunaFone.setCellValueFactory(u -> u.getValue().foneProperty());
+            TableColumn<Usuario, String> colunaFone
+                    = new TableColumn<>("Telefone");
+            colunaFone.setCellValueFactory(u
+                    -> u.getValue().foneProperty());
 
-            TableColumn<Usuario, String> colunaLogin = new TableColumn<>("Login");
-            colunaLogin.setCellValueFactory(u -> u.getValue().loginProperty());
+            TableColumn<Usuario, String> colunaLogin
+                    = new TableColumn<>("Login");
+            colunaLogin.setCellValueFactory(u
+                    -> u.getValue().loginProperty());
 
-            TableColumn<Usuario, String> colunaPerfil = new TableColumn<>("Perfil");
-            colunaPerfil.setCellValueFactory(u -> u.getValue().perfilProperty());
+            TableColumn<Usuario, String> colunaPerfil
+                    = new TableColumn<>("Perfil");
+            colunaPerfil.setCellValueFactory(u
+                    -> u.getValue().perfilProperty());
+            
+             TableColumn<Usuario, String> colunaEmail
+                    = new TableColumn<>("Email");
+            colunaEmail.setCellValueFactory(u
+                    -> u.getValue().emailProperty());
+            
+            TableColumn<Usuario, LocalDate> colunaAniversario
+                    = new TableColumn<>("Aniversário");
+            colunaAniversario.setCellValueFactory(u
+                    -> u.getValue().aniversarioProperty());
+            
+           
+            tabelaUsuarios.getColumns().addAll(colunaID,
+                    colunaNome, colunaFone, colunaLogin,
+                    colunaPerfil, colunaEmail, colunaAniversario);
 
-            TableColumn<Usuario, String> colunaEmail = new TableColumn<>("Email");
-            colunaEmail.setCellValueFactory(u -> u.getValue().emailProperty());
-
+//            tabelaUsuarios.setItems(lista);
+            FilteredList<Usuario> listaFiltrada = new
+                FilteredList<>(lista, p -> true);
+            
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            TableColumn<Usuario, String> colunaData = new TableColumn<>("Data");
-            colunaData.setCellValueFactory(u -> {
-                Date dataSQL = u.getValue().getData();
-                if (dataSQL != null) {
-                    LocalDate dataLocal = dataSQL.toLocalDate();
-                    return new javafx.beans.property.SimpleStringProperty(dataLocal.format(dtf));
-                } else {
-                    return new javafx.beans.property.SimpleStringProperty("");
-                }
-            });
-
-            tabelaUsuarios.getColumns().addAll(colunaID, colunaNome, colunaFone, colunaLogin,
-                    colunaPerfil, colunaEmail, colunaData);
-
-            FilteredList<Usuario> listaFiltrada = new FilteredList<>(lista, p -> true);
 
             txtPesquisar.textProperty().addListener((obs, oldVal, newVal) -> {
                 listaFiltrada.setPredicate(usuario -> {
-                    if (newVal == null || newVal.isEmpty()) {
+                    if(newVal == null || newVal.isEmpty()){
                         return true;
                     }
                     String filtro = newVal.toLowerCase();
-
+                    
                     return usuario.getNome().toLowerCase().contains(filtro)
                             || usuario.getLogin().toLowerCase().contains(filtro)
                             || usuario.getFone().toLowerCase().contains(filtro)
                             || usuario.getPerfil().toLowerCase().contains(filtro)
                             || usuario.getEmail().toLowerCase().contains(filtro)
-                            || (usuario.getData() != null && usuario.getData().toLocalDate().format(dtf).toLowerCase().contains(filtro));
+                            || (usuario.getAniversario() != null && usuario.getAniversario().toLocalDate().format(dtf).toLowerCase().contains(filtro));
                 });
             });
-
-            SortedList<Usuario> listaOrdenada = new SortedList<>(listaFiltrada);
-            listaOrdenada.comparatorProperty().bind(tabelaUsuarios.comparatorProperty());
-            tabelaUsuarios.setItems(listaOrdenada);
+                SortedList<Usuario> listaOrdenada = new SortedList<>(listaFiltrada);
+                listaOrdenada.comparatorProperty().
+                        bind(tabelaUsuarios.comparatorProperty());
+                tabelaUsuarios.setItems(listaOrdenada);
 
         } else {
             AlertaUtil.mostrarErro("Erro", "Erro ao carregar usuários");
         }
     }
 
-    // Método para buscar do banco de dados
+    //Método para buscar do banco de dados
     private ObservableList<Usuario> listarUsuarios() throws SQLException {
         UsuarioDAO dao = new UsuarioDAO();
         return dao.selecionarUsuarios();
@@ -180,12 +189,12 @@ public class ListagemUsuariosController {
                 telaCadastroUsuarios.setOnShown(evento -> {
                     cadc.ajustarElementosJanela(this.usuario);
                 });
-
+                
                 cadc.setOnUsuarioSalvo(() -> {
-                    try {
+                    try{
                         atualizarUsuariosTabela();
-                    } catch (SQLException ex) {
-                        // Pode adicionar tratamento de erro aqui
+                    } catch (SQLException ex){
+                        
                     }
                 });
 
@@ -197,9 +206,10 @@ public class ListagemUsuariosController {
             }
         }
     }
-
-    private void atualizarUsuariosTabela() throws SQLException {
+    
+    private void atualizarUsuariosTabela() throws SQLException{
         lista = FXCollections.observableArrayList(listarUsuarios());
-        tabelaUsuarios.setItems(lista); // Vem do BD
+        tabelaUsuarios.setItems(lista); //Vem do BD
     }
+
 }
