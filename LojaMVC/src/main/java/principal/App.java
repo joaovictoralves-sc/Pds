@@ -39,7 +39,7 @@ public class App extends Application {
 
     public static void main(String[] args) throws SQLException {
         
-        ClienteDAO clienteDAO = new ClienteDAO();
+        /*ClienteDAO clienteDAO = new ClienteDAO();
         
         //Cria um novo cliente
         Cliente novoCliente = new Cliente();
@@ -53,7 +53,7 @@ public class App extends Application {
         clienteDAO.inserirCliente(novoCliente);
         
         //Lista os clientes cadastrados no banco de dados
-        clienteDAO.listarClientes();
+        clienteDAO.listarClientes();*/
         
         launch();
     }
