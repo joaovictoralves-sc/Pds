@@ -1,0 +1,29 @@
+.root {
+    -fx-background-color: #ffffff; 
+}
+
+.button {
+    -fx-background-color: #38a169; 
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 25px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+    -fx-border-color: #38a169;
+}
+
+.button:hover {
+    -fx-background-color: #2f855a; 
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #2f855a;
+}
+
+/* Inputs */
+.text-field, .password-field {
+    -fx-background-color: #f7fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-text-fill: #2d3748;
+    -fx-prompt-text-fill: #2d3748;
+}
