@@ -1,0 +1,104 @@
+/* Fundo geral com preto real absoluto */
+.root {
+    -fx-background-color: #121212;
+}
+
+/* Cabeçalho e menus */
+.pane, .top, .bottom, .menu-bar {
+    -fx-background-color: #1e1e1e;
+}
+
+/* Menus e itens de menu */
+.menu, .menu-item {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #e0e0e0;
+}
+
+/* Labels (textos gerais) */
+.label {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 14px;
+}
+
+#lblCadastroClientes, #lblUsuario {
+    -fx-text-fill: #e0e0e0;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}
+
+/* Campos de texto (TextField, PasswordField) */
+.text-field, .password-field {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 1px;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+/* DatePicker */
+.date-picker {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 1px;
+    -fx-text-fill: #ffffff;
+    -fx-prompt-text-fill: #aaaaaa;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #1f1f1f;
+    -fx-border-color: #3c3c3c;
+    -fx-border-width: 1px;
+    -fx-text-fill: #ffffff;
+}
+
+/* Botões padrão */
+.button {
+    -fx-background-color: #bb86fc;
+    -fx-text-fill: #121212;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 30px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
+    -fx-background-radius: 5px;
+}
+
+/* Hover dos botões */
+.button:hover {
+    -fx-background-color: #9d6dfc;
+    -fx-border-color: #ffffff;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: #1e1e1e;
+    -fx-control-inner-background: #1f1f1f;
+    -fx-text-background-color: #e0e0e0;
+    -fx-border-color: #3c3c3c;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #1e1e1e;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #1f1f1f;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #9d6dfc;
+    -fx-text-fill: #121212;
+}
+
+/* Ajustes finos para GridPane, se necessário */
+.grid-pane {
+    -fx-hgap: 15px;
+    -fx-vgap: 10px;
+}
